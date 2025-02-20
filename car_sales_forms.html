@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Sales Forms</title>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; }
+        #container { position: relative; width: 612px; height: 792px; margin: 20px auto; } /* Letter size */
+        #pdfViewer { width: 100%; height: 100%; }
+        .field { position: absolute; background: rgba(255, 255, 255, 0.7); border: 1px solid #000; }
+        .text-field { padding: 2px; }
+        .checkbox-field { width: 20px; height: 20px; }
+        #signaturePad { position: absolute; width: 300px; height: 100px; border: 1px solid #000; }
+        button, select { margin: 10px; }
+        .form-section { display: none; }
+    </style>
+</head>
+<body>
+    <select id="formSelector" onchange="switchForm()">
+        <option value="salesReceipt">Sales Receipt/Bill of Sale</option>
+        <option value="dr0024">DR 0024 Sales Tax Receipt</option>
+        <option value="dr2395">DR 2395 Title/Registration</option>
+    </select>
+    <div id="container">
+        <canvas id="pdfViewer"></canvas>
+
+        <!-- Sales Receipt/Bill of Sale Fields -->
+        <div id="salesReceipt" class="form-section">
+            <input type="text" class="field text-field" id="srDate" placeholder="Date" style="top: 50px; left: 20px; width: 150px;">
+            <input type="text" class="field text-field" id="srSeller" placeholder="Seller" style="top: 80px; left: 20px; width: 300px;">
+            <input type="text" class="field text-field" id="srBuyer" placeholder="Buyer(s)" style="top: 110px; left: 20px; width: 300px;">
+            <input type="text" class="field text-field" id="srState" placeholder="State" style="top: 140px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="srAddress" placeholder="Address" style="top: 170px; left: 20px; width: 300px;">
+            <input type="text" class="field text-field" id="srTaxID1" placeholder="Colorado Tax ID" style="top: 200px; left: 20px; width: 150px;">
+            <input type="text" class="field text-field" id="srTaxID2" placeholder="Colorado Springs Tax ID" style="top: 230px; left: 20px; width: 150px;">
+            <input type="text" class="field text-field" id="srVIN" placeholder="VIN" style="top: 260px; left: 20px; width: 200px;">
+            <input type="text" class="field text-field" id="srGarage" placeholder="Garage and Repairs" style="top: 290px; left: 20px; width: 300px;">
+            <canvas id="srSignaturePad" class="signaturePad" style="top: 350px; left: 150px;"></canvas>
+        </div>
+
+        <!-- DR 0024 Fields -->
+        <div id="dr0024" class="form-section">
+            <input type="text" class="field text-field" id="d2DealerName" placeholder="Dealer/Retailer Name" style="top: 100px; left: 20px; width: 300px;">
+            <input type="text" class="field text-field" id="d2DealerAddress" placeholder="Dealer Address" style="top: 130px; left: 20px; width: 300px;">
+            <input type="text" class="field text-field" id="d2DealerNum" placeholder="Dealer Number" style="top: 160px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d2InvoiceNum" placeholder="Invoice Number" style="top: 160px; left: 130px; width: 100px;">
+            <input type="text" class="field text-field" id="d2GrossPrice" placeholder="Gross Sales Price" style="top: 190px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d2TradeInAmount" placeholder="Trade-in Amount" style="top: 190px; left: 130px; width: 100px;">
+            <input type="text" class="field text-field" id="d2NetPrice" placeholder="Net Sales Price" style="top: 190px; left: 240px; width: 100px;">
+            <input type="text" class="field text-field" id="d2SaleDate" placeholder="Date of Sale" style="top: 220px; left: 20px; width: 150px;">
+            <input type="text" class="field text-field" id="d2Year" placeholder="Model Year" style="top: 250px; left: 20px; width: 60px;">
+            <input type="text" class="field text-field" id="d2Make" placeholder="Make" style="top: 250px; left: 90px; width: 100px;">
+            <input type="text" class="field text-field" id="d2Model" placeholder="Model" style="top: 250px; left: 200px; width: 100px;">
+            <input type="text" class="field text-field" id="d2VIN" placeholder="VIN" style="top: 280px; left: 20px; width: 200px;">
+            <input type="text" class="field text-field" id="d2TradeYear1" placeholder="Trade-in Year 1" style="top: 310px; left: 20px; width: 60px;">
+            <input type="text" class="field text-field" id="d2TradeMake1" placeholder="Trade-in Make 1" style="top: 310px; left: 90px; width: 100px;">
+            <input type="text" class="field text-field" id="d2TradeModel1" placeholder="Trade-in Model 1" style="top: 310px; left: 200px; width: 100px;">
+            <input type="text" class="field text-field" id="d2TradeVIN1" placeholder="Trade-in VIN 1" style="top: 340px; left: 20px; width: 200px;">
+            <input type="text" class="field text-field" id="d2TradeYear2" placeholder="Trade-in Year 2" style="top: 370px; left: 20px; width: 60px;">
+            <input type="text" class="field text-field" id="d2TradeMake2" placeholder="Trade-in Make 2" style="top: 370px; left: 90px; width: 100px;">
+            <input type="text" class="field text-field" id="d2TradeModel2" placeholder="Trade-in Model 2" style="top: 370px; left: 200px; width: 100px;">
+            <input type="text" class="field text-field" id="d2TradeVIN2" placeholder="Trade-in VIN 2" style="top: 400px; left: 20px; width: 200px;">
+            <input type="text" class="field text-field" id="d2PurchaserName" placeholder="Purchaser Name" style="top: 430px; left: 20px; width: 300px;">
+            <input type="text" class="field text-field" id="d2PurchaserAddress" placeholder="Purchaser Address" style="top: 460px; left: 20px; width: 300px;">
+            <input type="text" class="field text-field" id="d2TaxAccountState" placeholder="State Tax Account" style="top: 500px; left: 20px; width: 150px;">
+            <input type="text" class="field text-field" id="d2TaxAccountCity" placeholder="City Tax Account" style="top: 500px; left: 180px; width: 150px;">
+            <input type="checkbox" class="field checkbox-field" id="d2DeliveredYes" style="top: 530px; left: 20px;"> <span style="position: absolute; top: 530px; left: 50px;">Delivered Yes</span>
+            <input type="checkbox" class="field checkbox-field" id="d2DeliveredNo" style="top: 530px; left: 120px;"> <span style="position: absolute; top: 530px; left: 150px;">No</span>
+            <input type="text" class="field text-field" id="d2NetPriceTax" placeholder="Net Sales Price" style="top: 560px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d2StateTax" placeholder="State Tax" style="top: 590px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d2RTDTax" placeholder="RTD/SCFD Tax" style="top: 620px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d2CityTax" placeholder="City Tax" style="top: 650px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d2DistrictTax" placeholder="District Tax" style="top: 680px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d2CountyTax" placeholder="County Tax" style="top: 710px; left: 20px; width: 100px;">
+            <canvas id="d2SignaturePad" class="signaturePad" style="top: 750px; left: 150px;"></canvas>
+        </div>
+
+        <!-- DR 2395 Fields -->
+        <div id="dr2395" class="form-section">
+            <input type="text" class="field text-field" id="d3VIN" placeholder="VIN" style="top: 50px; left: 20px; width: 200px;">
+            <input type="text" class="field text-field" id="d3FuelType" placeholder="Fuel Type" style="top: 50px; left: 230px; width: 100px;">
+            <input type="checkbox" class="field checkbox-field" id="d3FlexFuelYes" style="top: 80px; left: 20px;"> <span style="position: absolute; top: 80px; left: 50px;">Flex Fuel Yes</span>
+            <input type="checkbox" class="field checkbox-field" id="d3FlexFuelNo" style="top: 80px; left: 120px;"> <span style="position: absolute; top: 80px; left: 150px;">No</span>
+            <input type="checkbox" class="field checkbox-field" id="d3PlugInYes" style="top: 100px; left: 20px;"> <span style="position: absolute; top: 100px; left: 50px;">Plug-in Yes</span>
+            <input type="checkbox" class="field checkbox-field" id="d3PlugInNo" style="top: 100px; left: 120px;"> <span style="position: absolute; top: 100px; left: 150px;">No</span>
+            <input type="text" class="field text-field" id="d3Year" placeholder="Year" style="top: 130px; left: 20px; width: 60px;">
+            <input type="text" class="field text-field" id="d3Make" placeholder="Make" style="top: 130px; left: 90px; width: 100px;">
+            <input type="text" class="field text-field" id="d3Body" placeholder="Body" style="top: 130px; left: 200px; width: 100px;">
+            <input type="text" class="field text-field" id="d3Model" placeholder="Model" style="top: 150px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d3Color" placeholder="Color" style="top: 150px; left: 130px; width: 100px;">
+            <input type="text" class="field text-field" id="d3CWT" placeholder="CWT" style="top: 150px; left: 240px; width: 60px;">
+            <input type="checkbox" class="field checkbox-field" id="d3OffHighwayYes" style="top: 180px; left: 20px;"> <span style="position: absolute; top: 180px; left: 50px;">Off-Highway Yes</span>
+            <input type="checkbox" class="field checkbox-field" id="d3OffHighwayNo" style="top: 180px; left: 120px;"> <span style="position: absolute; top: 180px; left: 150px;">No</span>
+            <input type="checkbox" class="field checkbox-field" id="d3SnowmobileYes" style="top: 200px; left: 20px;"> <span style="position: absolute; top: 200px; left: 50px;">Snowmobile Yes</span>
+            <input type="checkbox" class="field checkbox-field" id="d3SnowmobileNo" style="top: 200px; left: 120px;"> <span style="position: absolute; top: 200px; left: 150px;">No</span>
+            <input type="text" class="field text-field" id="d3DealerNum" placeholder="Dealer #" style="top: 230px; left: 20px; width: 100px;">
+            <input type="date" class="field text-field" id="d3DatePurchased" style="top: 230px; left: 130px; width: 150px;">
+            <input type="checkbox" class="field checkbox-field" id="d3CommercialYes" style="top: 260px; left: 20px;"> <span style="position: absolute; top: 260px; left: 50px;">Commercial Yes</span>
+            <input type="checkbox" class="field checkbox-field" id="d3CommercialNo" style="top: 260px; left: 120px;"> <span style="position: absolute; top: 260px; left: 150px;">No</span>
+            <input type="text" class="field text-field" id="d3MSRP" placeholder="MSRP" style="top: 280px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d3Size" placeholder="Size (W x L)" style="top: 280px; left: 130px; width: 100px;">
+            <input type="text" class="field text-field" id="d3BusCapacity" placeholder="Bus Capacity" style="top: 300px; left: 20px; width: 100px;">
+            <input type="text" class="field text-field" id="d3OwnerName" placeholder="Owner Name(s)" style="top: 330px; left: 20px; width: 300px;">
+            <textarea class="field text-field" id="d3OwnerAddress" placeholder="Owner Address" style="top: 350px; left: 20px; width: 300px; height: 50px;"></textarea>
+            <input type="checkbox" class="field checkbox-field" id="d3LeaseBuyOutYes" style="top: 410px; left: 20px;"> <span style="position: absolute; top: 410px; left: 50px;">Lease Buy-Out Yes</span>
+            <input type="checkbox" class="field checkbox-field" id="d3LeaseBuyOutNo" style="top: 410px; left: 120px;"> <span style="position: absolute; top: 410px; left: 150px;">No</span>
+            <input type="text" class="field text-field" id="d3LesseeName" placeholder="Lessee Name(s)" style="top: 440px; left: 20px; width: 300px;">
+            <textarea class="field text-field" id="d3LesseeAddress" placeholder="Lessee Address" style="top: 460px; left: 20px; width: 300px; height: 50px;"></textarea>
+            <textarea class="field text-field" id="d3AltRegAddress" placeholder="Alt Registration Address" style="top: 520px; left: 20px; width: 300px; height: 50px;"></textarea>
+            <input type="checkbox" class="field checkbox-field" id="d3DR2421Yes" style="top: 580px; left: 20px;"> <span style="position: absolute; top: 580px; left: 50px;">DR 2421 Yes</span>
+            <input type="checkbox" class="field checkbox-field" id="d3DR2421No" style="top: 580px; left: 120px;"> <span style="position: absolute; top: 580px; left: 150px;">No</span>
+            <input type="text" class="field text-field" id="d3Lienholder1Name" placeholder="1st Lienholder Name" style="top: 610px; left: 20px; width: 200px;">
+            <textarea class="field text-field" id="d3Lienholder1Address" placeholder="1st Lienholder Address" style="top: 630px; left: 20px; width: 200px; height: 50px;"></textarea>
+            <input type="text" class="field text-field" id="d3LienAmount" placeholder="Lien Amount" style="top: 610px; left: 230px; width: 100px;">
+            <input type="text" class="field text-field" id="d3Lienholder2Name" placeholder="2nd Lienholder Name" style="top: 690px; left: 20px; width: 200px;">
+            <textarea class="field text-field" id="d3Lienholder2Address" placeholder="2nd Lienholder Address" style="top: 710px; left: 20px; width: 200px; height: 50px;"></textarea>
+            <textarea class="field text-field" id="d3AltTitleAddress" placeholder="Alt Title Address" style="top: 770px; left: 20px; width: 300px; height: 50px;"></textarea>
+            <canvas id="d3SignaturePad" class="signaturePad" style="top: 650px; left: 150px;"></canvas>
+        </div>
+    </div>
+    <button onclick="saveAsPDF()">Save as PDF</button>
+    <button onclick="clearSignature()">Clear Signature</button>
+
+    <!-- Load Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        const { jsPDF } = window.jspdf;
+        const pdfURLs = {
+            salesReceipt: 'https://drive.google.com/uc?export=download&id=1RUs0tulvvhgMqnsLehAkQepBRAx8e02l',
+            dr0024: 'https://drive.google.com/uc?export=download&id=1yhsphmcmIVMPcsAZSy8b8fq6KnCgYkNp',
+            dr2395: 'https://drive.google.com/uc?export=download&id=1IODvB04qZBxqG5JQnz-nCU3uceGnIPB8'
+        };
+        let currentSigCanvas;
+
+        function loadPDF(url) {
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                pdf.getPage(1).then(page => {
+                    const canvas = document.getElementById('pdfViewer');
+                    const context = canvas.getContext('2d');
+                    const viewport = page.getViewport({ scale: 1 });
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    page.render({ canvasContext: context, viewport: viewport });
+                });
+            });
+        }
+
+        function switchForm() {
+            const form = document.getElementById('formSelector').value;
+            document.querySelectorAll('.form-section').forEach(section => section.style.display = 'none');
+            document.getElementById(form).style.display = 'block';
+            loadPDF(pdfURLs[form]);
+            currentSigCanvas = document.getElementById(form + 'SignaturePad');
+            setupSignature(currentSigCanvas);
+        }
+
+        function setupSignature(canvas) {
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('touchstart', startDrawingTouch);
+            canvas.addEventListener('touchmove', drawTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+
+            function startDrawing(e) { drawing = true; draw(e); }
+            function startDrawingTouch(e) { drawing = true; drawTouch(e); }
+            function stopDrawing() { drawing = false; ctx.beginPath(); }
+            function draw(e) {
+                if (!drawing) return;
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000';
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(e.offsetX, e.offsetY);
+            }
+            function drawTouch(e) {
+                if (!drawing) return;
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000';
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
+        }
+
+        function clearSignature() {
+            if (currentSigCanvas) {
+                const ctx = currentSigCanvas.getContext('2d');
+                ctx.clearRect(0, 0, currentSigCanvas.width, currentSigCanvas.height);
+            }
+        }
+
+        function saveAsPDF() {
+            html2canvas(document.getElementById('container')).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const doc = new jsPDF();
+                doc.addImage(imgData, 'PNG', 0, 0, 210, 297); // A4 size in mm
+                const form = document.getElementById('formSelector').value;
+                doc.save(form + '_Filled.pdf');
+            });
+        }
+
+        // Load the first form by default
+        switchForm();
+    </script>
+</body>
+</html>
